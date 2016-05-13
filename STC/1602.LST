@@ -1,0 +1,101 @@
+C51 COMPILER V9.52.0.0   1602                                                              05/14/2016 03:08:54 PAGE 1   
+
+
+C51 COMPILER V9.52.0.0, COMPILATION OF MODULE 1602
+OBJECT MODULE PLACED IN 1602.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 1602.c BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include <STC12C5A60S2.H>
+   2          #include "1602.h"
+   3          //********************延时
+   4          void delay(uchar z)
+   5          {
+   6   1       uchar i,j;
+   7   1       for(i=z;i>0;i--)
+   8   1        for(j=110;j>0;j--);
+   9   1      }
+  10          //**********************LCM初始化
+  11          void InitLCM()
+  12          {
+  13   1       WriteCommandLCM(0x38,0);  //三次显示模式设置，不检测忙信号
+  14   1       delay(1);
+  15   1       WriteCommandLCM(0x38,0);
+  16   1       delay(1);
+  17   1       WriteCommandLCM(0x38,0);
+  18   1       delay(1);
+  19   1       WriteCommandLCM(0x38,1);  //显示模式设置：16×2显示，5×7点阵，8位数据接口
+  20   1       WriteCommandLCM(0x0c,1);  //显示模式设置：显示开，无光标
+  21   1       WriteCommandLCM(0x06,1);  //显示模式设置：光标右移，字符不移
+  22   1       WriteCommandLCM(0x01,1);  //清屏幕指令，将以前的显示内容清除
+  23   1      }
+  24          //*********************读状态
+  25          uchar ReadStatusLCM()
+  26          {
+  27   1       P0 = 0x80; 
+  28   1       LCM_RS = 0;
+  29   1       LCM_RW = 1;
+  30   1       LCM_E = 1;
+  31   1       while (P0 & 0x80); //检测忙信号
+  32   1       return(0);
+  33   1      }
+  34          //**********************写指令
+  35          void WriteCommandLCM(uchar WCLCM, Busy)
+  36          {
+  37   1       if(Busy) ReadStatusLCM();
+  38   1       P0=WCLCM;
+  39   1       LCM_RS=0;
+  40   1       LCM_RW=0;
+  41   1       LCM_E=0;
+  42   1       LCM_E=1;
+  43   1      }
+  44          //***********************写数据
+  45          void WriteDataLCM(uchar WDLCM)
+  46          {
+  47   1       ReadStatusLCM();
+  48   1       P0=WDLCM;
+  49   1       LCM_RS=1;
+  50   1       LCM_RW=0;
+  51   1       LCM_E=0;
+  52   1       LCM_E=1;
+  53   1      }
+  54          //*************************显示字符
+  55          void DisplayOneChar(uchar X,uchar Y,uchar DData)
+C51 COMPILER V9.52.0.0   1602                                                              05/14/2016 03:08:54 PAGE 2   
+
+  56          {
+  57   1       if(Y) X|=0X40;   //Y=1显示第二行，Y=0显示第一行
+  58   1       X|=0X80;
+  59   1       WriteCommandLCM(X,1); //X用来选择哪一位，1是用来忙检测
+  60   1       WriteDataLCM(DData); //DData用来写数据
+  61   1      }
+  62          //**************************显示字符串
+  63          void DisplayListChar(uchar X,uchar Y,uchar code *DData)
+  64          {
+  65   1       uchar ListLength;
+  66   1       ListLength=0;
+  67   1       while(DData[ListLength]!='\0')
+  68   1       {
+  69   2        if(X<=15)
+  70   2        {
+  71   3         DisplayOneChar( X,Y,DData[ListLength]);
+  72   3         ListLength++;
+  73   3         X++;
+  74   3        }
+  75   2       }
+  76   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    195    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

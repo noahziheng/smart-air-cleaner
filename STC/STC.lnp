@@ -1,0 +1,7 @@
+"STARTUP.obj",
+"1602.obj",
+"main.obj",
+"DHT11.obj",
+"uart.obj" 
+TO "STC" 
+RAMSIZE(256) 
