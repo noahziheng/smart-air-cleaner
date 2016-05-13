@@ -5,6 +5,7 @@ var http= require('http'), io= require('socket.io');
 var HOST = '0.0.0.0';
 var PORT = 8888;
 var global_new = false;
+var gsock;
 
 var server= http.createServer(function(req, res){
   // 发送HTML的headers和message
@@ -18,6 +19,7 @@ socket.on('connection', function(client){
   console.log('CLIENT Connected');
   client.on('message',function(event){
     console.log('Received message from client!',event);
+    gsock.write(event);
   });
   client.on('disconnect',function(){
     console.log('Server has disconnected');
@@ -29,7 +31,7 @@ net.createServer(function(sock) {
     // 我们获得一个连接 - 该连接自动关联一个socket对象
     console.log('CONNECTED: ' +
         sock.remoteAddress + ':' + sock.remotePort);
-
+    gsock=sock;
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(odata) {
         odata = odata.toString();
@@ -47,7 +49,7 @@ net.createServer(function(sock) {
         }else{
             console.log('DATA ' + sock.remoteAddress + ': ' + odata);
         }
-        sock.write('GET');
+        sock.write('G');
     });
 
     // 为这个socket实例添加一个"close"事件处理函数

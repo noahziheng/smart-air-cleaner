@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 03:31:09 PAGE 1   
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 06:28:13 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE UART
@@ -10,107 +10,118 @@ line level    source
    1          #include <STC12C5A60S2.H>
    2          #include "uart.h"
    3          #define S2RI 0x01 //串口2接收中断请求标志位
-   4          uint   j =  0   ;
-   5          uchar  GP2Y_DATA[]={0xAA,0x00,0x00,0x00,0x00,0x00,0xFF,0x00};
-   6          float v0=0.0;
-   7          float PM=0.0;
-   8          
-   9          sbit newRXD=P3^2 ;
-  10          uchar tmpbuf;
-  11          
-  12          void Uart_One_Init()           //串口1初始化函数，波特率9600
-  13          { 
-  14   1        TMOD=0x21;//设置定时器1为工作方式2
-  15   1        TH1=0xfd; //设置波特率为9600
-  16   1        TL1=0xfd;
-  17   1        TR1=1;
-  18   1        REN=1;
-  19   1        SM0=0;
-  20   1        SM1=1;
-  21   1        EA=1;
-  22   1        ES=1; 
-  23   1      //  AUXR|=0X40;       //T1*12;
-  24   1      }                
-  25          //========================================
-  26          void Uart_One_Send(char k)       //串口1发送一个字符
-  27          {
-  28   1        ES  =  0 ;
-  29   1         SBUF=k;
-  30   1          while(TI!=1);
-  31   1          TI  =  0 ;
-  32   1          ES  =  1  ;
-  33   1      }
-  34          //=========baud 2400=======================
-  35          void Uart_Two_Init()       //串口2初始化函数，波特率2400
-  36          {
-  37   1          AUXR &= 0xF7;   //波特率不倍速
-  38   1          S2CON = 0x50;   //8位数据,可变波特率
-  39   1          AUXR |= 0x04;   //独立波特率发生器时钟为Fosc,即1T
-  40   1          BRT = 0x70;   //设定独立波特率发生器重装值
-  41   1          AUXR |= 0x10;   //启动独立波特率发生器
-  42   1          IE2=0x01;
-  43   1      }
-  44          
-  45          //=============================================
-  46          void UART_One_Printf(uchar *p)
-  47          {
-  48   1         while(* p!='\0') Uart_One_Send(*p++);
-  49   1      }
-  50          //===========================================
-  51          void Uart_One_Receive() interrupt 4
-  52          {
-  53   1        uint k =  0   ;
-  54   1        if(RI==1)
-  55   1        {
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 03:31:09 PAGE 2   
+   4          #define MOTOR P14
+   5          uint   j =  0   ;
+   6          uchar  GP2Y_DATA[]={0xAA,0x00,0x00,0x00,0x00,0x00,0xFF,0x00};
+   7          float v0=0.0;
+   8          float PM=0.0;
+   9          uchar getflag;
+  10          
+  11          void Uart_One_Init()           //串口1初始化函数，波特率9600
+  12          {
+  13   1        TMOD=0x21;//设置定时器1为工作方式2
+  14   1        TH1=0xfd; //设置波特率为9600
+  15   1        TL1=0xfd;
+  16   1        TR1=1;
+  17   1        REN=1;
+  18   1        SM0=0;
+  19   1        SM1=1;
+  20   1        EA=1;
+  21   1        ES=1;
+  22   1      //  AUXR|=0X40;       //T1*12;
+  23   1      }
+  24          //========================================
+  25          void Uart_One_Send(char k)       //串口1发送一个字符
+  26          {
+  27   1        ES  =  0 ;
+  28   1         SBUF=k;
+  29   1          while(TI!=1);
+  30   1          TI  =  0 ;
+  31   1          ES  =  1  ;
+  32   1      }
+  33          //=========baud 2400=======================
+  34          void Uart_Two_Init()       //串口2初始化函数，波特率2400
+  35          {
+  36   1          AUXR &= 0xF7;   //波特率不倍速
+  37   1          S2CON = 0x50;   //8位数据,可变波特率
+  38   1          AUXR |= 0x04;   //独立波特率发生器时钟为Fosc,即1T
+  39   1          BRT = 0x70;   //设定独立波特率发生器重装值
+  40   1          AUXR |= 0x10;   //启动独立波特率发生器
+  41   1          IE2=0x01;
+  42   1      }
+  43          
+  44          //=============================================
+  45          void UART_One_Printf(uchar *p)
+  46          {
+  47   1         while(* p!='\0') Uart_One_Send(*p++);
+  48   1      }
+  49          //===========================================
+  50          void Uart_One_Receive() interrupt 4
+  51          {
+  52   1        uint k =  0   ;
+  53   1        if(RI==1)
+  54   1        {
+  55   2          RI = 0   ;
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 06:28:13 PAGE 2   
 
-  56   2          RI = 0   ;
-  57   2          k = SBUF;
-  58   2          Uart_One_Send(k);
-  59   2        }
-  60   1      }
-  61          //========================================
-  62          void Uart_Two_Receive() interrupt 8
-  63          { 
-  64   1        EA=0;
-  65   1        if(S2CON&S2RI)
-  66   1        {
-  67   2          S2CON&=~S2RI;
-  68   2          GP2Y_DATA[j]=S2BUF;
-  69   2          if(S2BUF==0xff){
-  70   3            j=0;
-  71   3            GP2Y_CAL();
-  72   3            GP2Y_DATA[7]=0xFF;
-  73   3          }else if(S2BUF==0xaa){
-  74   3            j=1;
-  75   3          }else{
-  76   3            j++;
-  77   3          }
-  78   2        }
-  79   1        EA=1;
-  80   1      }
-  81          //=====================================
-  82          void GP2Y_CAL()
-  83          {
-  84   1        uchar flag=0;
-  85   1        uint sum;
-  86   1        sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
-  87   1        if(sum==GP2Y_DATA[5]){
-  88   2          v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
-  89   2          PM=v0*800;
-  90   2        }else{
-  91   2          v0=0.0;
-  92   2          PM=999.0;
-  93   2        }
-  94   1      }
+  56   2          if(SBUF=='G'){
+  57   3            getflag=0;
+  58   3          }
+  59   2          if(SBUF=='M'){
+  60   3            MOTOR=!MOTOR;
+  61   3          }
+  62   2          if(SBUF=='U'){
+  63   3            CCAP0H+=0x10;  //  占空比控制
+  64   3            CCAP0L+=0x10;
+  65   3          }
+  66   2          if(SBUF=='D'){
+  67   3            CCAP0H-=0x10;  //  占空比控制
+  68   3            CCAP0L-=0x10;
+  69   3          }
+  70   2        }
+  71   1      }
+  72          //========================================
+  73          void Uart_Two_Receive() interrupt 8
+  74          {
+  75   1        EA=0;
+  76   1        if(S2CON&S2RI)
+  77   1        {
+  78   2          S2CON&=~S2RI;
+  79   2          GP2Y_DATA[j]=S2BUF;
+  80   2          if(S2BUF==0xff){
+  81   3            j=0;
+  82   3            GP2Y_CAL();
+  83   3            GP2Y_DATA[7]=0xFF;
+  84   3          }else if(S2BUF==0xaa){
+  85   3            j=1;
+  86   3          }else{
+  87   3            j++;
+  88   3          }
+  89   2        }
+  90   1        EA=1;
+  91   1      }
+  92          //=====================================
+  93          void GP2Y_CAL()
+  94          {
+  95   1        uchar flag=0;
+  96   1        uint sum;
+  97   1        sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
+  98   1        if(sum==GP2Y_DATA[5]){
+  99   2          v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
+ 100   2          PM=v0*800;
+ 101   2        }else{
+ 102   2          v0=0.0;
+ 103   2          PM=999.0;
+ 104   2        }
+ 105   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    388    ----
+   CODE SIZE        =    425    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     19       4
+   DATA SIZE        =     19       6
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

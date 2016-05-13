@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 03:31:08 PAGE 1   
+C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 06:28:13 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
@@ -23,64 +23,98 @@ line level    source
   14          #define BUTTON3 P23
   15          #define BUTTON4 P22
   16          
-  17          void InitLCD ()
+  17          void Delay500ms()   //@11.0592MHz
   18          {
-  19   1        InitLCM();
-  20   1        DisplayListChar(0,0,"STATUS:NORMAL");
-  21   1        DisplayListChar(0,1,"T=00 H=00 A=100");
-  22   1      }
-  23          void main()
-  24          {
-  25   1        unsigned int i=0 ;
-  26   1        InitLCD();
-  27   1        LED1=1;
-  28   1        LED2=1;
-  29   1        BUTTON1=1;
-  30   1        BUTTON2=1;
-  31   1        BUTTON3=1;
-  32   1        BUTTON4=1;
-  33   1        MOTOR=1;
-  34   1        CCON=0;          //PCA初始化
-  35   1        CL=0;       //PCA的16位计数器低八位
-  36   1        CH=0;       //PCA的16位计数器高八位
-  37   1        CMOD=0x00; //选择 系统时钟/12 为计数脉冲,则PWM的频率f=sysclk/256/12;
-  38   1        CCAP0H=0xA0;  //  占空比控制
-  39   1        CCAP0L=0xA0; 
-  40   1        PCA_PWM0=0x00; //控制占空比的第九位为0
-  41   1        CCAPM0=0x42;  //允许P13作为PWM输出
-  42   1        CR=1;     //启动PCA计数器
-  43   1        Uart_Two_Init();
-  44   1        Uart_One_Init();
-  45   1        while(1)
-  46   1        {
-  47   2          RH();
-  48   2          DisplayOneChar(2,1,U8T_data_H/10+0x30);
-  49   2          DisplayOneChar(3,1,U8T_data_H%10+0x30);
-  50   2          DisplayOneChar(7,1,U8RH_data_H/10+0x30);
-  51   2          DisplayOneChar(8,1,U8RH_data_H%10+0x30);
-  52   2          DisplayOneChar(12,1,(int)PM/100%10+0x30);
-  53   2          DisplayOneChar(13,1,(int)PM/10%10+0x30);
-  54   2          DisplayOneChar(14,1,(int)PM%10+0x30);
-  55   2          //for(i=0;i<7;i++)
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 03:31:08 PAGE 2   
+  19   1        unsigned char i, j, k;
+  20   1      
+  21   1        i = 22;
+  22   1        j = 3;
+  23   1        k = 227;
+  24   1        do
+  25   1        {
+  26   2          do
+  27   2          {
+  28   3            while (--k);
+  29   3          } while (--j);
+  30   2        } while (--i);
+  31   1      }
+  32          
+  33          void InitLCD ()
+  34          {
+  35   1        InitLCM();
+  36   1        DisplayListChar(0,0,"STATUS:OFFLINE");
+  37   1        DisplayListChar(0,1,"Connecting...");
+  38   1      }
+  39          
+  40          void Init_online()
+  41          {
+  42   1        getflag=1;
+  43   1        while(getflag){
+  44   2          Uart_One_Printf("AT");
+  45   2          Delay500ms();
+  46   2          if(getflag==0)
+  47   2            break;
+  48   2        }
+  49   1      
+  50   1      }
+  51          
+  52          void main()
+  53          {
+  54   1        unsigned int i=0 ;
+  55   1        InitLCD();
+C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 06:28:13 PAGE 2   
 
-  56   2            //Uart_One_Send(GP2Y_DATA[i]);
-  57   2          /*if(GP2Y_DATA[7]==0xFF){
-  58   2            UART_One_Printf("PM2.5=");
-  59   2            Uart_One_Send(PM/100%10+0x30);
-  60   2            Uart_One_Send(PM/10%10+0x30);
-  61   2            Uart_One_Send(PM%10+0x30);
-  62   2            Uart_One_Send(0x0d);
-  63   2            Uart_One_Send(0x0a);
-  64   2            GP2Y_DATA[7]=0x00;
-  65   2          }*/
-  66   2        }
-  67   1      }
+  56   1        LED1=1;
+  57   1        LED2=1;
+  58   1        BUTTON1=1;
+  59   1        BUTTON2=1;
+  60   1        BUTTON3=1;
+  61   1        BUTTON4=1;
+  62   1        MOTOR=1;
+  63   1        CCON=0;          //PCA初始化
+  64   1        CL=0;       //PCA的16位计数器低八位
+  65   1        CH=0;       //PCA的16位计数器高八位
+  66   1        CMOD=0x00; //选择 系统时钟/12 为计数脉冲,则PWM的频率f=sysclk/256/12;
+  67   1        CCAP0H=0xA0;  //  占空比控制
+  68   1        CCAP0L=0xA0;
+  69   1        PCA_PWM0=0x00; //控制占空比的第九位为0
+  70   1        CCAPM0=0x42;  //允许P13作为PWM输出
+  71   1        CR=1;     //启动PCA计数器
+  72   1        Uart_Two_Init();
+  73   1        Uart_One_Init();
+  74   1        Init_online();
+  75   1        DisplayListChar(0,0,"STATUS:NORMAL");
+  76   1        DisplayListChar(0,1,"T=00 H=00 A=000");
+  77   1        while(1){
+  78   2          RH();
+  79   2          DisplayOneChar(2,1,U8T_data_H/10+0x30);
+  80   2          DisplayOneChar(3,1,U8T_data_H%10+0x30);
+  81   2          DisplayOneChar(7,1,U8RH_data_H/10+0x30);
+  82   2          DisplayOneChar(8,1,U8RH_data_H%10+0x30);
+  83   2          DisplayOneChar(12,1,(int)PM/100%10+0x30);
+  84   2          DisplayOneChar(13,1,(int)PM/10%10+0x30);
+  85   2          DisplayOneChar(14,1,(int)PM%10+0x30);
+  86   2          Uart_One_Printf("N:");
+  87   2          Uart_One_Send((int)MOTOR+0x30);
+  88   2          Uart_One_Send(':');
+  89   2          Uart_One_Send(8+0x30);
+  90   2          Uart_One_Send(':');
+  91   2          Uart_One_Send(U8T_data_H/10+0x30);
+  92   2          Uart_One_Send(U8T_data_H%10+0x30);
+  93   2          Uart_One_Send(':');
+  94   2          Uart_One_Send(U8RH_data_H/10+0x30);
+  95   2          Uart_One_Send(U8RH_data_H%10+0x30);
+  96   2          Uart_One_Send(':');
+  97   2          Uart_One_Send((int)PM/100%10+0x30);
+  98   2          Uart_One_Send((int)PM/10%10+0x30);
+  99   2          Uart_One_Send((int)PM%10+0x30);
+ 100   2        }
+ 101   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    249    ----
-   CONSTANT SIZE    =     30    ----
+   CODE SIZE        =    496    ----
+   CONSTANT SIZE    =     65    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----       2

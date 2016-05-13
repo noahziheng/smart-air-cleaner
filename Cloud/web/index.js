@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:8080');
+var socket = io.connect('http://localhost:80');
 
 // 添加一个连接监听器
 socket.on('connect',function() {
@@ -80,6 +80,15 @@ function sendMessageToServer(message) {
 
 $(function() {
     $("#motor_switch").click(function(event) {
-        sendMessageToServer("MOTORCHANGE");
+        sendMessageToServer("M");
+    });
+    $("#ring_test").click(function(event) {
+        sendMessageToServer("M");
+    });
+    $("#up_speed").click(function(event) {
+        sendMessageToServer("U");
+    });
+    $("#down_speed").click(function(event) {
+        sendMessageToServer("D");
     });
 });

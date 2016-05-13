@@ -5,15 +5,16 @@
 
 extern uchar  GP2Y_DATA[];
 extern float PM;
+extern uchar getflag;
 
-void Uart_One_Init();					 //串口1初始化函数，波特率9600							 
+void Uart_One_Init();					 //串口1初始化函数，波特率9600
 //========================================
 void Uart_One_Send(char k);			 //串口1发送一个字符
 
 void Uart_Two_Init();			 //串口2初始化函数，波特率2400
 
 //=============================================
-void UART_One_Printf(uchar *p);
+void Uart_One_Printf(uchar *p);
 //===========================================
 void Uart_One_Receive();
 

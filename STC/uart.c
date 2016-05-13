@@ -1,16 +1,15 @@
 #include <STC12C5A60S2.H>
 #include "uart.h"
 #define S2RI 0x01	//串口2接收中断请求标志位
+#define MOTOR P14
 uint   j =  0   ;
 uchar  GP2Y_DATA[]={0xAA,0x00,0x00,0x00,0x00,0x00,0xFF,0x00};
 float v0=0.0;
 float PM=0.0;
-
-sbit newRXD=P3^2 ;
-uchar tmpbuf;
+uchar getflag;
 
 void Uart_One_Init()					 //串口1初始化函数，波特率9600
-{ 
+{
 	TMOD=0x21;//设置定时器1为工作方式2
 	TH1=0xfd;	//设置波特率为9600
 	TL1=0xfd;
@@ -19,9 +18,9 @@ void Uart_One_Init()					 //串口1初始化函数，波特率9600
 	SM0=0;
 	SM1=1;
 	EA=1;
-	ES=1;	
+	ES=1;
 //	AUXR|=0X40;				//T1*12;
-}								 
+}
 //========================================
 void Uart_One_Send(char k)			 //串口1发送一个字符
 {
@@ -54,13 +53,25 @@ void Uart_One_Receive() interrupt 4
 	if(RI==1)
 	{
 		RI = 0   ;
-		k = SBUF;
-		Uart_One_Send(k);
+		if(SBUF=='G'){
+			getflag=0;
+		}
+		if(SBUF=='M'){
+			MOTOR=!MOTOR;
+		}
+		if(SBUF=='U'){
+			CCAP0H+=0x10;  //  占空比控制
+			CCAP0L+=0x10;
+		}
+		if(SBUF=='D'){
+			CCAP0H-=0x10;  //  占空比控制
+			CCAP0L-=0x10;
+		}
 	}
 }
 //========================================
 void Uart_Two_Receive() interrupt 8
-{ 
+{
 	EA=0;
   if(S2CON&S2RI)
 	{

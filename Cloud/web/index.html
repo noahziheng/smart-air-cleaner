@@ -64,8 +64,8 @@
               <td><span id="humidity_tag_badge" class="am-badge am-badge-primary am-round am-text-lg"><span id="humidity_tag" >0</span> %</span></td>
           </tr>
           <tr>
-              <td>AQI (空气质量指数)</td>
-              <td><span id="aqi_tag_badge" class="am-badge am-round am-text-lg"><span id="aqi_tag" >0</span> mg/m^3</span></td>
+              <td>PM2.5</td>
+              <td><span id="aqi_tag_badge" class="am-badge am-round am-text-lg"><span id="aqi_tag" >0</span> ug/m^3</span></td>
           </tr>
           <tr>
               <td>空气质量等级</td>
@@ -73,14 +73,16 @@
           </tr>
       </tbody>
     </table>
-    <div id="setting" data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
-      <h2 class="am-titlebar-title ">设置</h2>
-    </div>
     <div id="debug" data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
       <h2 class="am-titlebar-title ">调试</h2>
     </div>
     <label><input id="motor_switch" class="mui-switch mui-switch-anim" type="checkbox"> 电机开关</label>
-    <button type="button" class="am-btn am-btn-danger">声光报警测试</button>
+    <button id="ring_test" type="button" class="am-btn am-btn-danger">声光报警测试</button>
+    <button id="up_speed" type="button" class="am-btn am-btn-primary">升速+10</button>
+    <button id="down_speed" type="button" class="am-btn am-btn-primary">降速-10</button>
+    <div id="setting" data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
+      <h2 class="am-titlebar-title ">设置</h2>
+    </div>
   </div>
 </main>
 <script src="http://cdn.bootcss.com/jquery/2.2.3/jquery.js"></script>
