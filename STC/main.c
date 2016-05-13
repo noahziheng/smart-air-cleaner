@@ -13,19 +13,6 @@
 #define BUTTON2 P24
 #define BUTTON3 P23
 #define BUTTON4 P22
-#define BEER P20
-
-void Delay500us()		//@11.0592MHz
-{
-	unsigned char i, j;
-
-	i = 6;
-	j = 93;
-	do
-	{
-		while (--j);
-	} while (--i);
-}
 
 void InitLCD ()
 {
@@ -57,13 +44,6 @@ void main()
 	Uart_One_Init();
   while(1)
   {
-		for(i=0;i<100000;i++)
-		{
-			BEER=1;
-			Delay500us();
-			BEER=0;
-			Delay500us();
-		}
     RH();
 		DisplayOneChar(2,1,U8T_data_H/10+0x30);
 		DisplayOneChar(3,1,U8T_data_H%10+0x30);

@@ -86,7 +86,7 @@ void GP2Y_CAL()
 	sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
 	if(sum==GP2Y_DATA[5]){
 		v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
-		PM=v0*700;
+		PM=v0*800;
 	}else{
 		v0=0.0;
 		PM=999.0;

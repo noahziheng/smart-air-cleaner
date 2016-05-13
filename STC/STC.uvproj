@@ -391,6 +391,11 @@
               <FileType>5</FileType>
               <FilePath>.\uart.h</FilePath>
             </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

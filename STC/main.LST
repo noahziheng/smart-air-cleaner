@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 03:08:54 PAGE 1   
+C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 03:31:08 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
@@ -22,84 +22,64 @@ line level    source
   13          #define BUTTON2 P24
   14          #define BUTTON3 P23
   15          #define BUTTON4 P22
-  16          #define BEER P20
-  17          
-  18          void Delay500us()   //@11.0592MHz
-  19          {
-  20   1        unsigned char i, j;
-  21   1      
-  22   1        i = 6;
-  23   1        j = 93;
-  24   1        do
-  25   1        {
-  26   2          while (--j);
-  27   2        } while (--i);
-  28   1      }
-  29          
-  30          void InitLCD ()
-  31          {
-  32   1        InitLCM();
-  33   1        DisplayListChar(0,0,"STATUS:NORMAL");
-  34   1        DisplayListChar(0,1,"T=00 H=00 A=100");
-  35   1      }
-  36          void main()
-  37          {
-  38   1        unsigned int i=0 ;
-  39   1        InitLCD();
-  40   1        LED1=1;
-  41   1        LED2=1;
-  42   1        BUTTON1=1;
-  43   1        BUTTON2=1;
-  44   1        BUTTON3=1;
-  45   1        BUTTON4=1;
-  46   1        MOTOR=1;
-  47   1        CCON=0;          //PCA初始化
-  48   1        CL=0;       //PCA的16位计数器低八位
-  49   1        CH=0;       //PCA的16位计数器高八位
-  50   1        CMOD=0x00; //选择 系统时钟/12 为计数脉冲,则PWM的频率f=sysclk/256/12;
-  51   1        CCAP0H=0xA0;  //  占空比控制
-  52   1        CCAP0L=0xA0; 
-  53   1        PCA_PWM0=0x00; //控制占空比的第九位为0
-  54   1        CCAPM0=0x42;  //允许P13作为PWM输出
-  55   1        CR=1;     //启动PCA计数器
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 03:08:54 PAGE 2   
+  16          
+  17          void InitLCD ()
+  18          {
+  19   1        InitLCM();
+  20   1        DisplayListChar(0,0,"STATUS:NORMAL");
+  21   1        DisplayListChar(0,1,"T=00 H=00 A=100");
+  22   1      }
+  23          void main()
+  24          {
+  25   1        unsigned int i=0 ;
+  26   1        InitLCD();
+  27   1        LED1=1;
+  28   1        LED2=1;
+  29   1        BUTTON1=1;
+  30   1        BUTTON2=1;
+  31   1        BUTTON3=1;
+  32   1        BUTTON4=1;
+  33   1        MOTOR=1;
+  34   1        CCON=0;          //PCA初始化
+  35   1        CL=0;       //PCA的16位计数器低八位
+  36   1        CH=0;       //PCA的16位计数器高八位
+  37   1        CMOD=0x00; //选择 系统时钟/12 为计数脉冲,则PWM的频率f=sysclk/256/12;
+  38   1        CCAP0H=0xA0;  //  占空比控制
+  39   1        CCAP0L=0xA0; 
+  40   1        PCA_PWM0=0x00; //控制占空比的第九位为0
+  41   1        CCAPM0=0x42;  //允许P13作为PWM输出
+  42   1        CR=1;     //启动PCA计数器
+  43   1        Uart_Two_Init();
+  44   1        Uart_One_Init();
+  45   1        while(1)
+  46   1        {
+  47   2          RH();
+  48   2          DisplayOneChar(2,1,U8T_data_H/10+0x30);
+  49   2          DisplayOneChar(3,1,U8T_data_H%10+0x30);
+  50   2          DisplayOneChar(7,1,U8RH_data_H/10+0x30);
+  51   2          DisplayOneChar(8,1,U8RH_data_H%10+0x30);
+  52   2          DisplayOneChar(12,1,(int)PM/100%10+0x30);
+  53   2          DisplayOneChar(13,1,(int)PM/10%10+0x30);
+  54   2          DisplayOneChar(14,1,(int)PM%10+0x30);
+  55   2          //for(i=0;i<7;i++)
+C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 03:31:08 PAGE 2   
 
-  56   1        Uart_Two_Init();
-  57   1        Uart_One_Init();
-  58   1        while(1)
-  59   1        {
-  60   2          for(i=0;i<100000;i++)
-  61   2          {
-  62   3            BEER=1;
-  63   3            Delay500us();
-  64   3            BEER=0;
-  65   3            Delay500us();
-  66   3          }
-  67   2          RH();
-  68   2          DisplayOneChar(2,1,U8T_data_H/10+0x30);
-  69   2          DisplayOneChar(3,1,U8T_data_H%10+0x30);
-  70   2          DisplayOneChar(7,1,U8RH_data_H/10+0x30);
-  71   2          DisplayOneChar(8,1,U8RH_data_H%10+0x30);
-  72   2          DisplayOneChar(12,1,(int)PM/100%10+0x30);
-  73   2          DisplayOneChar(13,1,(int)PM/10%10+0x30);
-  74   2          DisplayOneChar(14,1,(int)PM%10+0x30);
-  75   2          //for(i=0;i<7;i++)
-  76   2            //Uart_One_Send(GP2Y_DATA[i]);
-  77   2          /*if(GP2Y_DATA[7]==0xFF){
-  78   2            UART_One_Printf("PM2.5=");
-  79   2            Uart_One_Send(PM/100%10+0x30);
-  80   2            Uart_One_Send(PM/10%10+0x30);
-  81   2            Uart_One_Send(PM%10+0x30);
-  82   2            Uart_One_Send(0x0d);
-  83   2            Uart_One_Send(0x0a);
-  84   2            GP2Y_DATA[7]=0x00;
-  85   2          }*/
-  86   2        }
-  87   1      }
+  56   2            //Uart_One_Send(GP2Y_DATA[i]);
+  57   2          /*if(GP2Y_DATA[7]==0xFF){
+  58   2            UART_One_Printf("PM2.5=");
+  59   2            Uart_One_Send(PM/100%10+0x30);
+  60   2            Uart_One_Send(PM/10%10+0x30);
+  61   2            Uart_One_Send(PM%10+0x30);
+  62   2            Uart_One_Send(0x0d);
+  63   2            Uart_One_Send(0x0a);
+  64   2            GP2Y_DATA[7]=0x00;
+  65   2          }*/
+  66   2        }
+  67   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    303    ----
+   CODE SIZE        =    249    ----
    CONSTANT SIZE    =     30    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
