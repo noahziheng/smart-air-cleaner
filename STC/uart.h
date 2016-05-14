@@ -3,6 +3,7 @@
 #define uchar unsigned char
 #define uint unsigned int
 
+extern uchar MAN_MOTOR;
 extern uchar  GP2Y_DATA[];
 extern float PM;
 extern uchar MOTOR_SPEED;
@@ -10,6 +11,7 @@ extern uint GP2Y_K;
 extern uchar getflag;
 extern uchar time[];
 
+void sound(int x);
 void Uart_One_Init();					 //串口1初始化函数，波特率9600
 //========================================
 void Uart_One_Send(char k);			 //串口1发送一个字符

@@ -6,7 +6,6 @@ function charLeftAll(n)
         return n;
 }
 var net = require('net');
-var fs = require('fs');
 var http= require('http'), io= require('socket.io');
 
 var HOST = '0.0.0.0';
@@ -46,14 +45,9 @@ net.createServer(function(sock) {
         if(data[0]=='N'){
             //写入文件
             data.shift();
-            data[4].replace('N','');
-            console.log('DATA ' + sock.remoteAddress + ": \n  Motor Status: " + data[0]+"\n  Motor Speed: "+data[1]+"\n  Tempature: "+data[2]+"\n  Humidity: "+data[3]+"\n  AQI: "+data[4]);
+            data[4]=data[4].replace('N','');
+            console.log('DATA ' + sock.remoteAddress + ": \n  Motor Status: " + data[0]+"\n  Mode: "+data[1]+"\n  Motor Speed: "+data[2]+"\n  Tempature: "+data[3]+"\n  Humidity: "+data[4]+"\n  AQI: "+data[5]);
             socket.emit("notice",data);
-            data = JSON.stringify(data);
-            fs.writeFile('data.dat',data, function (err) {
-                if (err) throw err;
-                console.log('Saved!'); //文件被保存
-            });
         }else{
             console.log('DATA ' + sock.remoteAddress + ': ' + odata);
         }
