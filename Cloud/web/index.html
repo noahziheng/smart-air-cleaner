@@ -28,8 +28,7 @@
     <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
       <ul class="am-nav am-nav-pills am-topbar-nav">
         <li ><a href="#monitor">监测</a></li>
-        <li><a href="#setting">设置</a></li>
-        <li><a href="#debug">调试</a></li>
+        <li><a href="#debug">操作</a></li>
       </ul>
     </div>
   </div>
@@ -50,6 +49,10 @@
           <tr>
               <td>电机状态</td>
               <td><span id="motorstatus_tag" class="am-badge am-round am-text-lg">未知</span></td>
+          </tr>
+          <tr>
+              <td>操作模式</td>
+              <td><span id="mode_tag" class="am-badge am-round am-text-lg">未知</span></td>
           </tr>
           <tr>
               <td>电机速度</td>
@@ -74,16 +77,14 @@
       </tbody>
     </table>
     <div id="debug" data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
-      <h2 class="am-titlebar-title ">调试</h2>
+      <h2 class="am-titlebar-title ">操作</h2>
     </div>
-    <p><button id="man_switch" type="button" class="am-btn am-btn-primary">手动控制开关</button>
+    <p><button id="man_switch" type="button" class="am-btn am-btn-primary">模式切换</button>
     <button id="motor_switch" type="button" class="am-btn am-btn-primary">电机开关</button></p>
-    <p><button id="up_speed" type="button" class="am-btn am-btn-primary">升速+10</button>
-    <button id="down_speed" type="button" class="am-btn am-btn-primary">降速-10</button></p>
-    <p><button id="ring_test" type="button" class="am-btn am-btn-danger">声光报警测试</button></p>
-    <div id="setting" data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
-      <h2 class="am-titlebar-title ">设置</h2>
-    </div>
+    <p><button id="up_speed" type="button" class="am-btn am-btn-primary">升速</button>
+    <button id="down_speed" type="button" class="am-btn am-btn-primary">降速</button></p>
+    <p><button id="ring_test" type="button" class="am-btn am-btn-danger">声光报警测试</button>
+    <button id="reboot" type="button" class="am-btn am-btn-danger">重新启动系统</button></p>
   </div>
 </main>
 <script src="http://cdn.bootcss.com/jquery/2.2.3/jquery.js"></script>

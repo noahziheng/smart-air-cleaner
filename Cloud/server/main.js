@@ -38,6 +38,7 @@ net.createServer(function(sock) {
     console.log('CONNECTED: ' +
         sock.remoteAddress + ':' + sock.remotePort);
     gsock=sock;
+    sock.write('R');
     // 为这个socket实例添加一个"data"事件处理函数
     sock.on('data', function(odata) {
         odata = odata.toString();
