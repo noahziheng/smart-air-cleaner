@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:80');
+var socket = io.connect('http://216.189.52.222:8080');
 
 // 添加一个连接监听器
 socket.on('connect',function() {
@@ -15,46 +15,56 @@ socket.on('notice',function(data) {
     $("#motorstatus_tag").html("停转");
     $("#motorstatus_tag").removeClass("am-badge-success");
     $("#motorstatus_tag").addClass("am-badge-danger");
-    $("#motor_switch").attr('checked', false);
   } else if (data[0]=='1') {
     $("#motorstatus_tag").html("转动中");
     $("#motorstatus_tag").addClass("am-badge-success");
     $("#motorstatus_tag").removeClass("am-badge-danger");
-    $("#motor_switch").attr('checked', true);
   }else{
     $("#motorstatus_tag").html("未知");
     $("#motorstatus_tag").removeClass("am-badge-success");
     $("#motorstatus_tag").removeClass("am-badge-danger");
-    $("#motor_switch").attr('checked', false);
+  }
+  if (data[1]=='0') {
+    $("#mode_tag").html("智能模式");
+    $("#mode_tag").addClass("am-badge-success");
+    $("#mode_tag").removeClass("am-badge-primary");
+  } else if (data[1]=='1') {
+    $("#mode_tag").html("手动模式");
+    $("#mode_tag").removeClass("am-badge-success");
+    $("#mode_tag").addClass("am-badge-primary");
+  }else{
+    $("#mode_tag").html("未知");
+    $("#mode_tag").removeClass("am-badge-success");
+    $("#mode_tag").removeClass("am-badge-primary");
   }
   $("#motorspeed_tag").html(data[1]);
-  if (parseInt(data[1])>=90) {
+  if (parseInt(data[2])>=14) {
       $("#motorspeed_tag_badge").removeClass("am-badge-success");
       $("#motorspeed_tag_badge").addClass("am-badge-danger");
   } else {
       $("#motorspeed_tag_badge").addClass("am-badge-success");
       $("#motorspeed_tag_badge").removeClass("am-badge-danger");
   }
-  $("#tempature_tag").html(data[2]);
-  $("#humidity_tag").html(data[3]);
-  $("#aqi_tag").html(data[4]);
-  if (parseInt(data[4])>300) {
+  $("#tempature_tag").html(data[3]);
+  $("#humidity_tag").html(data[4]);
+  $("#aqi_tag").html(data[5]);
+  if (parseInt(data[5])>300) {
     $("#aqi_tag_badge").css('background-color', '#660000');
     $("#airlevel_tag").html('严重污染');
     $("#airlevel_tag").css('background-color', '#660000');
-  } else if (parseInt(data[4])>200) {
+  } else if (parseInt(data[5])>200) {
     $("#aqi_tag_badge").css('background-color', '#990099');
     $("#airlevel_tag").html('重度污染');
     $("#airlevel_tag").css('background-color', '#990099');
-  } else if (parseInt(data[4])>150) {
+  } else if (parseInt(data[5])>150) {
     $("#aqi_tag_badge").css('background-color', '#FF0000');
     $("#airlevel_tag").html('中度污染');
     $("#airlevel_tag").css('background-color', '#FF0000');
-  } else if (parseInt(data[4])>100) {
+  } else if (parseInt(data[5])>100) {
     $("#aqi_tag_badge").css('background-color', '#FF6600');
     $("#airlevel_tag").html('轻度污染');
     $("#airlevel_tag").css('background-color', '#FF6600');
-  } else if (parseInt(data[4])>50) {
+  } else if (parseInt(data[5])>50) {
     $("#aqi_tag_badge").css('background-color', '#CCFF00');
     $("#airlevel_tag").html('良');
     $("#airlevel_tag").css('background-color', '#CCFF00');
@@ -79,11 +89,17 @@ function sendMessageToServer(message) {
 }
 
 $(function() {
-    $("#motor_switch").click(function(event) {
+    $("#man_switch").click(function(event) {
         sendMessageToServer("M");
     });
+    $("#motor_switch").click(function(event) {
+        sendMessageToServer("C");
+    });
     $("#ring_test").click(function(event) {
-        sendMessageToServer("M");
+        sendMessageToServer("T");
+    });
+    $("#reboot").click(function(event) {
+        sendMessageToServer("R");
     });
     $("#up_speed").click(function(event) {
         sendMessageToServer("U");
