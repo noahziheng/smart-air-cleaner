@@ -66,14 +66,13 @@ void Uart_One_Receive() interrupt 4
 		}else if(SBUF=='M'){
 			MOTOR=!MOTOR;
 		}else if(SBUF=='U'){
-			MOTOR_SPEED-=1;
-		Uart_One_Send(MOTOR_SPEED/10+0x30);
-		Uart_One_Send(MOTOR_SPEED%10+0x30);
+			MOTOR_SPEED--;
+			Uart_One_Send(MOTOR_SPEED/10+0x30);
+			Uart_One_Send(MOTOR_SPEED%10+0x30);
 		}else if(SBUF=='D'){
-			MOTOR_SPEED+=1;
-			
-		Uart_One_Send(MOTOR_SPEED/10+0x30);
-		Uart_One_Send(MOTOR_SPEED%10+0x30);
+			MOTOR_SPEED++;
+			Uart_One_Send(MOTOR_SPEED/10+0x30);
+			Uart_One_Send(MOTOR_SPEED%10+0x30);
 		}else{
 			temp[tempflag]=SBUF;
 			tempflag++;

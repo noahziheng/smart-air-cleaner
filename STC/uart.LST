@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:42:29 PAGE 1   
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:46:31 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE UART
@@ -62,7 +62,7 @@ line level    source
   53          //===========================================
   54          void Uart_One_Receive() interrupt 4
   55          {
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:42:29 PAGE 2   
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:46:31 PAGE 2   
 
   56   1        uint i=0;
   57   1        if(RI==1)
@@ -77,57 +77,56 @@ line level    source
   66   3          }else if(SBUF=='M'){
   67   3            MOTOR=!MOTOR;
   68   3          }else if(SBUF=='U'){
-  69   3            MOTOR_SPEED-=1;
-  70   3          Uart_One_Send(MOTOR_SPEED/10+0x30);
-  71   3          Uart_One_Send(MOTOR_SPEED%10+0x30);
+  69   3            MOTOR_SPEED--;
+  70   3            Uart_One_Send(MOTOR_SPEED/10+0x30);
+  71   3            Uart_One_Send(MOTOR_SPEED%10+0x30);
   72   3          }else if(SBUF=='D'){
-  73   3            MOTOR_SPEED+=1;
-  74   3            
-  75   3          Uart_One_Send(MOTOR_SPEED/10+0x30);
-  76   3          Uart_One_Send(MOTOR_SPEED%10+0x30);
-  77   3          }else{
-  78   3            temp[tempflag]=SBUF;
-  79   3            tempflag++;
-  80   3          }
-  81   2        }
-  82   1      }
-  83          //========================================
-  84          void Uart_Two_Receive() interrupt 8
-  85          {
-  86   1        EA=0;
-  87   1        if(S2CON&S2RI)
-  88   1        {
-  89   2          S2CON&=~S2RI;
-  90   2          GP2Y_DATA[j]=S2BUF;
-  91   2          if(S2BUF==0xff){
-  92   3            j=0;
-  93   3            GP2Y_CAL();
-  94   3            GP2Y_DATA[7]=0xFF;
-  95   3          }else if(S2BUF==0xaa){
-  96   3            j=1;
-  97   3          }else{
-  98   3            j++;
-  99   3          }
- 100   2        }
- 101   1        EA=1;
- 102   1      }
- 103          //=====================================
- 104          void GP2Y_CAL()
- 105          {
- 106   1        uchar flag=0;
- 107   1        uint sum;
- 108   1        sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
- 109   1        if(sum==GP2Y_DATA[5]){
- 110   2          v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
- 111   2          PM=v0*GP2Y_K;
- 112   2        }else{
- 113   2          v0=0.0;
- 114   2          PM=999.0;
- 115   2        }
- 116   1      }
+  73   3            MOTOR_SPEED++;
+  74   3            Uart_One_Send(MOTOR_SPEED/10+0x30);
+  75   3            Uart_One_Send(MOTOR_SPEED%10+0x30);
+  76   3          }else{
+  77   3            temp[tempflag]=SBUF;
+  78   3            tempflag++;
+  79   3          }
+  80   2        }
+  81   1      }
+  82          //========================================
+  83          void Uart_Two_Receive() interrupt 8
+  84          {
+  85   1        EA=0;
+  86   1        if(S2CON&S2RI)
+  87   1        {
+  88   2          S2CON&=~S2RI;
+  89   2          GP2Y_DATA[j]=S2BUF;
+  90   2          if(S2BUF==0xff){
+  91   3            j=0;
+  92   3            GP2Y_CAL();
+  93   3            GP2Y_DATA[7]=0xFF;
+  94   3          }else if(S2BUF==0xaa){
+  95   3            j=1;
+  96   3          }else{
+  97   3            j++;
+  98   3          }
+  99   2        }
+ 100   1        EA=1;
+ 101   1      }
+ 102          //=====================================
+ 103          void GP2Y_CAL()
+ 104          {
+ 105   1        uchar flag=0;
+ 106   1        uint sum;
+ 107   1        sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
+ 108   1        if(sum==GP2Y_DATA[5]){
+ 109   2          v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
+ 110   2          PM=v0*GP2Y_K;
+ 111   2        }else{
+ 112   2          v0=0.0;
+ 113   2          PM=999.0;
+ 114   2        }
+ 115   1      }
 
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:42:29 PAGE 3   
 
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:46:31 PAGE 3   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    505    ----
