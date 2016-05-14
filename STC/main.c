@@ -141,7 +141,13 @@ void buttoncheck()
 		Delay20ms();
 		if (BUTTON3==1)
 		{
-			MOTOR=!MOTOR;
+			if(MAN_MOTOR){
+				MOTOR=!MOTOR;
+			}else{
+				LED1=0;
+				sound(800);
+				LED1=1;
+			}
 			while(BUTTON3==0);
 		}
 	}

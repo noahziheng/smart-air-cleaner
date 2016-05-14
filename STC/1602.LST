@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   1602                                                              05/14/2016 22:16:46 PAGE 1   
+C51 COMPILER V9.52.0.0   1602                                                              05/14/2016 23:45:20 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE 1602
@@ -62,7 +62,7 @@ line level    source
   53   1      }
   54          //*************************显示字符
   55          void DisplayOneChar(uchar X,uchar Y,uchar DData)
-C51 COMPILER V9.52.0.0   1602                                                              05/14/2016 22:16:46 PAGE 2   
+C51 COMPILER V9.52.0.0   1602                                                              05/14/2016 23:45:20 PAGE 2   
 
   56          {
   57   1       if(Y) X|=0X40;   //Y=1显示第二行，Y=0显示第一行

@@ -46,7 +46,7 @@ net.createServer(function(sock) {
         if(data[0]=='N'){
             //写入文件
             data.shift();
-            data[4]=data[4].replace('N','');
+            data[5]=data[5].replace('N','');
             console.log('DATA ' + sock.remoteAddress + ": \n  Motor Status: " + data[0]+"\n  Mode: "+data[1]+"\n  Motor Speed: "+data[2]+"\n  Tempature: "+data[3]+"\n  Humidity: "+data[4]+"\n  AQI: "+data[5]);
             socket.emit("notice",data);
         }else{
