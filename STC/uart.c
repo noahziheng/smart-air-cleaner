@@ -6,7 +6,11 @@ uint   j =  0   ;
 uchar  GP2Y_DATA[]={0xAA,0x00,0x00,0x00,0x00,0x00,0xFF,0x00};
 float v0=0.0;
 float PM=0.0;
+uchar MOTOR_SPEED=10;
+uint GP2Y_K=800;
 uchar getflag;
+uchar *time="00:00:00";
+uchar timeflag=0;
 
 void Uart_One_Init()					 //串口1初始化函数，波特率9600
 {
@@ -49,23 +53,27 @@ void UART_One_Printf(uchar *p)
 //===========================================
 void Uart_One_Receive() interrupt 4
 {
-	uint k =  0   ;
 	if(RI==1)
 	{
 		RI = 0   ;
 		if(SBUF=='G'){
 			getflag=0;
+			timeflag=1;
+		}
+		if(timeflag>0&&timeflag<9){
+			time[timeflag-1]=SBUF;
+			timeflag++;
+		}else{
+			timeflag=0;
 		}
 		if(SBUF=='M'){
 			MOTOR=!MOTOR;
 		}
 		if(SBUF=='U'){
-			CCAP0H+=0x10;  //  占空比控制
-			CCAP0L+=0x10;
+			MOTOR_SPEED-=1;
 		}
 		if(SBUF=='D'){
-			CCAP0H-=0x10;  //  占空比控制
-			CCAP0L-=0x10;
+			MOTOR_SPEED+=1;
 		}
 	}
 }
@@ -97,7 +105,7 @@ void GP2Y_CAL()
 	sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
 	if(sum==GP2Y_DATA[5]){
 		v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
-		PM=v0*800;
+		PM=v0*GP2Y_K;
 	}else{
 		v0=0.0;
 		PM=999.0;

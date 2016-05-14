@@ -50,6 +50,12 @@ net.createServer(function(sock) {
             console.log('DATA ' + sock.remoteAddress + ': ' + odata);
         }
         sock.write('G');
+        process.env.TZ = "Asia/Shanghai";
+        var curDate = new Date();
+        var hour=curDate.getHours();
+        var min=curDate.getMinutes();
+        var sec=curDate.getSeconds();
+        sock.write(hour+':'+min+':'+sec);
     });
 
     // 为这个socket实例添加一个"close"事件处理函数
