@@ -1,5 +1,11 @@
-function charLeftAll(n)
+function charLeftAll(n,y)
 {
+    if (y) {
+      n=n+8;
+      if (n>24) {
+        n=n-24;
+      }
+    }
     if(n < 10)
         return "0" + n;
     else
@@ -54,9 +60,9 @@ net.createServer(function(sock) {
         }
         process.env.TZ = "Asia/Shanghai";
         var curDate = new Date();
-        var hour=charLeftAll(curDate.getHours());
-        var min=charLeftAll(curDate.getMinutes());
-        var sec=charLeftAll(curDate.getSeconds());
+        var hour=charLeftAll(curDate.getUTCHours(),true);
+        var min=charLeftAll(curDate.getUTCMinutes(),false);
+        var sec=charLeftAll(curDate.getUTCSeconds(),false);
         sock.write('G'+hour+':'+min+':'+sec+'I');
     });
 

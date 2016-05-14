@@ -123,8 +123,12 @@ void buttoncheck()
 		Delay20ms();
 		if (BUTTON1==1)
 		{
-			if(MOTOR_SPEED>3)
-				MOTOR_SPEED-=1;
+			if(MAN_MOTOR){
+				if(MOTOR_SPEED>3)
+					MOTOR_SPEED-=1;
+			}else{
+				IAP_CONTR|=0x20;
+			}
 			while(BUTTON1==0);
 		}
 	}

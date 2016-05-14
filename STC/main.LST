@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 23:45:21 PAGE 1   
+C51 COMPILER V9.52.0.0   MAIN                                                              05/15/2016 00:05:53 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   53          
   54          void InitLCD ()
   55          {
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 23:45:21 PAGE 2   
+C51 COMPILER V9.52.0.0   MAIN                                                              05/15/2016 00:05:53 PAGE 2   
 
   56   1        InitLCM();
   57   1        DisplayListChar(0,0," TUST_SAC BY:GFD");
@@ -126,7 +126,7 @@ line level    source
  115   1        Uart_One_Send((int)PM/100%10+0x30);
  116   1        Uart_One_Send((int)PM/10%10+0x30);
  117   1        Uart_One_Send((int)PM%10+0x30);
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 23:45:21 PAGE 3   
+C51 COMPILER V9.52.0.0   MAIN                                                              05/15/2016 00:05:53 PAGE 3   
 
  118   1      }
  119          
@@ -136,128 +136,132 @@ line level    source
  123   2          Delay20ms();
  124   2          if (BUTTON1==1)
  125   2          {
- 126   3            if(MOTOR_SPEED>3)
- 127   3              MOTOR_SPEED-=1;
- 128   3            while(BUTTON1==0);
- 129   3          }
- 130   2        }
- 131   1        if(BUTTON2==1){
- 132   2          Delay20ms();
- 133   2          if (BUTTON2==1)
- 134   2          {
- 135   3            if(MOTOR_SPEED<15)
- 136   3              MOTOR_SPEED+=1;
- 137   3            while(BUTTON2==0);
- 138   3          }
- 139   2        }
- 140   1        if(BUTTON3==1){
- 141   2          Delay20ms();
- 142   2          if (BUTTON3==1)
- 143   2          {
- 144   3            if(MAN_MOTOR){
- 145   4              MOTOR=!MOTOR;
- 146   4            }else{
- 147   4              LED1=0;
- 148   4              sound(800);
- 149   4              LED1=1;
- 150   4            }
- 151   3            while(BUTTON3==0);
- 152   3          }
- 153   2        }
- 154   1        if(BUTTON4==1){
- 155   2          Delay20ms();
- 156   2          if (BUTTON4==1)
- 157   2          {
- 158   3            MAN_MOTOR=!MAN_MOTOR;
- 159   3            while(BUTTON4==0);
- 160   3          }
- 161   2        }
- 162   1      
- 163   1      }
- 164          
- 165          void main()
- 166          {
- 167   1        unsigned int i=0 ;
- 168   1        InitLCD();
- 169   1        LED1=1;
- 170   1        LED2=1;
- 171   1        BUTTON1=0;
- 172   1        BUTTON2=0;
- 173   1        BUTTON3=0;
- 174   1        BUTTON4=0;
- 175   1        MOTOR=0;
- 176   1        CCON=0;          //PCA初始化
- 177   1        CL=0;       //PCA的16位计数器低八位
- 178   1        CH=0;       //PCA的16位计数器高八位
- 179   1        CMOD=0x00; //选择 系统时钟/12 为计数脉冲,则PWM的频率f=sysclk/256/12;
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 23:45:21 PAGE 4   
+ 126   3            if(MAN_MOTOR){
+ 127   4              if(MOTOR_SPEED>3)
+ 128   4                MOTOR_SPEED-=1;
+ 129   4            }else{
+ 130   4              IAP_CONTR|=0x20;
+ 131   4            }
+ 132   3            while(BUTTON1==0);
+ 133   3          }
+ 134   2        }
+ 135   1        if(BUTTON2==1){
+ 136   2          Delay20ms();
+ 137   2          if (BUTTON2==1)
+ 138   2          {
+ 139   3            if(MOTOR_SPEED<15)
+ 140   3              MOTOR_SPEED+=1;
+ 141   3            while(BUTTON2==0);
+ 142   3          }
+ 143   2        }
+ 144   1        if(BUTTON3==1){
+ 145   2          Delay20ms();
+ 146   2          if (BUTTON3==1)
+ 147   2          {
+ 148   3            if(MAN_MOTOR){
+ 149   4              MOTOR=!MOTOR;
+ 150   4            }else{
+ 151   4              LED1=0;
+ 152   4              sound(800);
+ 153   4              LED1=1;
+ 154   4            }
+ 155   3            while(BUTTON3==0);
+ 156   3          }
+ 157   2        }
+ 158   1        if(BUTTON4==1){
+ 159   2          Delay20ms();
+ 160   2          if (BUTTON4==1)
+ 161   2          {
+ 162   3            MAN_MOTOR=!MAN_MOTOR;
+ 163   3            while(BUTTON4==0);
+ 164   3          }
+ 165   2        }
+ 166   1      
+ 167   1      }
+ 168          
+ 169          void main()
+ 170          {
+ 171   1        unsigned int i=0 ;
+ 172   1        InitLCD();
+ 173   1        LED1=1;
+ 174   1        LED2=1;
+ 175   1        BUTTON1=0;
+ 176   1        BUTTON2=0;
+ 177   1        BUTTON3=0;
+ 178   1        BUTTON4=0;
+ 179   1        MOTOR=0;
+C51 COMPILER V9.52.0.0   MAIN                                                              05/15/2016 00:05:53 PAGE 4   
 
- 180   1        CCAP0H=0xA0;  //  占空比控制
- 181   1        CCAP0L=0xA0;
- 182   1        PCA_PWM0=0x00; //控制占空比的第九位为0
- 183   1        CCAPM0=0x42;  //允许P13作为PWM输出
- 184   1        CR=1;     //启动PCA计数器
- 185   1        Uart_Two_Init();
- 186   1        Uart_One_Init();
- 187   1        Init_online();
- 188   1        BEER=1;
- 189   1        DisplayListChar(0,0," 00:00:00 R 00 N");
- 190   1        DisplayListChar(0,1,"T=00 H=00 A=000");
- 191   1        LED2=0;
- 192   1        while(1){
- 193   2          buttoncheck();
- 194   2          if(MOTOR_SPEED>15)
- 195   2            MOTOR_SPEED=3;
- 196   2          else if(MOTOR_SPEED<3)
- 197   2            MOTOR_SPEED=15;
- 198   2          for(i=0;i<8;i++)
- 199   2            DisplayOneChar(i+1,0,time[i]);
- 200   2          if(MOTOR)
- 201   2            DisplayOneChar(10,0,'R');
- 202   2          else
- 203   2            DisplayOneChar(10,0,'S');
- 204   2          CCAP0H=MOTOR_SPEED*16;
- 205   2          CCAP0L=MOTOR_SPEED*16;
- 206   2          DisplayOneChar(12,0,speedtrans(MOTOR_SPEED)/10+0x30);
- 207   2          DisplayOneChar(13,0,speedtrans(MOTOR_SPEED)%10+0x30);
- 208   2          RH();
- 209   2          DisplayOneChar(2,1,U8T_data_H/10+0x30);
- 210   2          DisplayOneChar(3,1,U8T_data_H%10+0x30);
- 211   2          DisplayOneChar(7,1,U8RH_data_H/10+0x30);
- 212   2          DisplayOneChar(8,1,U8RH_data_H%10+0x30);
- 213   2          DisplayOneChar(12,1,(int)PM/100%10+0x30);
- 214   2          DisplayOneChar(13,1,(int)PM/10%10+0x30);
- 215   2          DisplayOneChar(14,1,(int)PM%10+0x30);
- 216   2          if(!MAN_MOTOR){
- 217   3            if(PM>100.0){
- 218   4              MOTOR=1;
- 219   4              MOTOR_SPEED=(PM/10)<15?speedtrans((int)(PM/10)):3;
- 220   4              LED1=0;
- 221   4              if(soundflag==0)
- 222   4                sound(800);
- 223   4              soundflag=1;
- 224   4            }else if(PM<80.0){
- 225   4              MOTOR=0;
- 226   4              MOTOR_SPEED=10;
- 227   4              LED1=1;
- 228   4              soundflag=0;
- 229   4            }else{
- 230   4              LED1=1;
- 231   4              soundflag=0;
- 232   4            }
- 233   3            DisplayOneChar(15,0,'N');
- 234   3          }else{
- 235   3            DisplayOneChar(15,0,'M');
- 236   3          }
- 237   2          Senddata();
- 238   2        }
- 239   1      }
+ 180   1        CCON=0;          //PCA初始化
+ 181   1        CL=0;       //PCA的16位计数器低八位
+ 182   1        CH=0;       //PCA的16位计数器高八位
+ 183   1        CMOD=0x00; //选择 系统时钟/12 为计数脉冲,则PWM的频率f=sysclk/256/12;
+ 184   1        CCAP0H=0xA0;  //  占空比控制
+ 185   1        CCAP0L=0xA0;
+ 186   1        PCA_PWM0=0x00; //控制占空比的第九位为0
+ 187   1        CCAPM0=0x42;  //允许P13作为PWM输出
+ 188   1        CR=1;     //启动PCA计数器
+ 189   1        Uart_Two_Init();
+ 190   1        Uart_One_Init();
+ 191   1        Init_online();
+ 192   1        BEER=1;
+ 193   1        DisplayListChar(0,0," 00:00:00 R 00 N");
+ 194   1        DisplayListChar(0,1,"T=00 H=00 A=000");
+ 195   1        LED2=0;
+ 196   1        while(1){
+ 197   2          buttoncheck();
+ 198   2          if(MOTOR_SPEED>15)
+ 199   2            MOTOR_SPEED=3;
+ 200   2          else if(MOTOR_SPEED<3)
+ 201   2            MOTOR_SPEED=15;
+ 202   2          for(i=0;i<8;i++)
+ 203   2            DisplayOneChar(i+1,0,time[i]);
+ 204   2          if(MOTOR)
+ 205   2            DisplayOneChar(10,0,'R');
+ 206   2          else
+ 207   2            DisplayOneChar(10,0,'S');
+ 208   2          CCAP0H=MOTOR_SPEED*16;
+ 209   2          CCAP0L=MOTOR_SPEED*16;
+ 210   2          DisplayOneChar(12,0,speedtrans(MOTOR_SPEED)/10+0x30);
+ 211   2          DisplayOneChar(13,0,speedtrans(MOTOR_SPEED)%10+0x30);
+ 212   2          RH();
+ 213   2          DisplayOneChar(2,1,U8T_data_H/10+0x30);
+ 214   2          DisplayOneChar(3,1,U8T_data_H%10+0x30);
+ 215   2          DisplayOneChar(7,1,U8RH_data_H/10+0x30);
+ 216   2          DisplayOneChar(8,1,U8RH_data_H%10+0x30);
+ 217   2          DisplayOneChar(12,1,(int)PM/100%10+0x30);
+ 218   2          DisplayOneChar(13,1,(int)PM/10%10+0x30);
+ 219   2          DisplayOneChar(14,1,(int)PM%10+0x30);
+ 220   2          if(!MAN_MOTOR){
+ 221   3            if(PM>100.0){
+ 222   4              MOTOR=1;
+ 223   4              MOTOR_SPEED=(PM/10)<15?speedtrans((int)(PM/10)):3;
+ 224   4              LED1=0;
+ 225   4              if(soundflag==0)
+ 226   4                sound(800);
+ 227   4              soundflag=1;
+ 228   4            }else if(PM<80.0){
+ 229   4              MOTOR=0;
+ 230   4              MOTOR_SPEED=10;
+ 231   4              LED1=1;
+ 232   4              soundflag=0;
+ 233   4            }else{
+ 234   4              LED1=1;
+ 235   4              soundflag=0;
+ 236   4            }
+ 237   3            DisplayOneChar(15,0,'N');
+ 238   3          }else{
+ 239   3            DisplayOneChar(15,0,'M');
+ 240   3          }
+ 241   2          Senddata();
+C51 COMPILER V9.52.0.0   MAIN                                                              05/15/2016 00:05:53 PAGE 5   
 
+ 242   2        }
+ 243   1      }
 
-C51 COMPILER V9.52.0.0   MAIN                                                              05/14/2016 23:45:21 PAGE 5   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1048    ----
+   CODE SIZE        =   1057    ----
    CONSTANT SIZE    =     67    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
