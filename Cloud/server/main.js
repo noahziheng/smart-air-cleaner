@@ -1,3 +1,10 @@
+function charLeftAll(n)
+{
+    if(n < 10)
+        return "0" + n;
+    else
+        return n;
+}
 var net = require('net');
 var fs = require('fs');
 var http= require('http'), io= require('socket.io');
@@ -39,6 +46,7 @@ net.createServer(function(sock) {
         if(data[0]=='N'){
             //写入文件
             data.shift();
+            data[4].replace('N','');
             console.log('DATA ' + sock.remoteAddress + ": \n  Motor Status: " + data[0]+"\n  Motor Speed: "+data[1]+"\n  Tempature: "+data[2]+"\n  Humidity: "+data[3]+"\n  AQI: "+data[4]);
             socket.emit("notice",data);
             data = JSON.stringify(data);
@@ -49,13 +57,12 @@ net.createServer(function(sock) {
         }else{
             console.log('DATA ' + sock.remoteAddress + ': ' + odata);
         }
-        sock.write('G');
         process.env.TZ = "Asia/Shanghai";
         var curDate = new Date();
-        var hour=curDate.getHours();
-        var min=curDate.getMinutes();
-        var sec=curDate.getSeconds();
-        sock.write(hour+':'+min+':'+sec);
+        var hour=charLeftAll(curDate.getHours());
+        var min=charLeftAll(curDate.getMinutes());
+        var sec=charLeftAll(curDate.getSeconds());
+        sock.write('G'+hour+':'+min+':'+sec+'I');
     });
 
     // 为这个socket实例添加一个"close"事件处理函数

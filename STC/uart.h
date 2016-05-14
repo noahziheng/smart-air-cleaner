@@ -8,7 +8,7 @@ extern float PM;
 extern uchar MOTOR_SPEED;
 extern uint GP2Y_K;
 extern uchar getflag;
-extern uchar *time;
+extern uchar time[];
 
 void Uart_One_Init();					 //串口1初始化函数，波特率9600
 //========================================

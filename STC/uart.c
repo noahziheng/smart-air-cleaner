@@ -9,8 +9,8 @@ float PM=0.0;
 uchar MOTOR_SPEED=10;
 uint GP2Y_K=800;
 uchar getflag;
-uchar *time="00:00:00";
-uchar timeflag=0;
+uchar time[]={'0','1',':','0','0',':','0','0'};
+uchar temp[16],tempflag;
 
 void Uart_One_Init()					 //串口1初始化函数，波特率9600
 {
@@ -53,27 +53,30 @@ void UART_One_Printf(uchar *p)
 //===========================================
 void Uart_One_Receive() interrupt 4
 {
+	uint i=0;
 	if(RI==1)
 	{
-		RI = 0   ;
+		RI = 0;
 		if(SBUF=='G'){
 			getflag=0;
-			timeflag=1;
-		}
-		if(timeflag>0&&timeflag<9){
-			time[timeflag-1]=SBUF;
-			timeflag++;
-		}else{
-			timeflag=0;
-		}
-		if(SBUF=='M'){
+		}else if(SBUF=='I'){
+			tempflag=0;
+			for(i=0;i<8;i++)
+				time[i]=temp[i];
+		}else if(SBUF=='M'){
 			MOTOR=!MOTOR;
-		}
-		if(SBUF=='U'){
+		}else if(SBUF=='U'){
 			MOTOR_SPEED-=1;
-		}
-		if(SBUF=='D'){
+		Uart_One_Send(MOTOR_SPEED/10+0x30);
+		Uart_One_Send(MOTOR_SPEED%10+0x30);
+		}else if(SBUF=='D'){
 			MOTOR_SPEED+=1;
+			
+		Uart_One_Send(MOTOR_SPEED/10+0x30);
+		Uart_One_Send(MOTOR_SPEED%10+0x30);
+		}else{
+			temp[tempflag]=SBUF;
+			tempflag++;
 		}
 	}
 }

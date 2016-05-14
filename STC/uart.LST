@@ -1,4 +1,4 @@
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 17:58:59 PAGE 1   
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:42:29 PAGE 1   
 
 
 C51 COMPILER V9.52.0.0, COMPILATION OF MODULE UART
@@ -18,8 +18,8 @@ line level    source
    9          uchar MOTOR_SPEED=10;
   10          uint GP2Y_K=800;
   11          uchar getflag;
-  12          uchar *time="00:00:00";
-  13          uchar timeflag=0;
+  12          uchar time[]={'0','1',':','0','0',':','0','0'};
+  13          uchar temp[16],tempflag;
   14          
   15          void Uart_One_Init()           //串口1初始化函数，波特率9600
   16          {
@@ -62,76 +62,79 @@ line level    source
   53          //===========================================
   54          void Uart_One_Receive() interrupt 4
   55          {
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 17:58:59 PAGE 2   
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:42:29 PAGE 2   
 
-  56   1        if(RI==1)
-  57   1        {
-  58   2          RI = 0   ;
-  59   2          if(SBUF=='G'){
-  60   3            getflag=0;
-  61   3            timeflag=1;
-  62   3          }
-  63   2          if(timeflag>0&&timeflag<9){
-  64   3            time[timeflag-1]=SBUF;
-  65   3            timeflag++;
-  66   3          }else{
-  67   3            timeflag=0;
-  68   3          }
-  69   2          if(SBUF=='M'){
-  70   3            MOTOR=!MOTOR;
-  71   3          }
-  72   2          if(SBUF=='U'){
-  73   3            MOTOR_SPEED-=1;
-  74   3          }
-  75   2          if(SBUF=='D'){
-  76   3            MOTOR_SPEED+=1;
-  77   3          }
-  78   2        }
-  79   1      }
-  80          //========================================
-  81          void Uart_Two_Receive() interrupt 8
-  82          {
-  83   1        EA=0;
-  84   1        if(S2CON&S2RI)
-  85   1        {
-  86   2          S2CON&=~S2RI;
-  87   2          GP2Y_DATA[j]=S2BUF;
-  88   2          if(S2BUF==0xff){
-  89   3            j=0;
-  90   3            GP2Y_CAL();
-  91   3            GP2Y_DATA[7]=0xFF;
-  92   3          }else if(S2BUF==0xaa){
-  93   3            j=1;
-  94   3          }else{
-  95   3            j++;
-  96   3          }
-  97   2        }
-  98   1        EA=1;
-  99   1      }
- 100          //=====================================
- 101          void GP2Y_CAL()
- 102          {
- 103   1        uchar flag=0;
- 104   1        uint sum;
- 105   1        sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
- 106   1        if(sum==GP2Y_DATA[5]){
- 107   2          v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
- 108   2          PM=v0*GP2Y_K;
- 109   2        }else{
- 110   2          v0=0.0;
- 111   2          PM=999.0;
- 112   2        }
- 113   1      }
+  56   1        uint i=0;
+  57   1        if(RI==1)
+  58   1        {
+  59   2          RI = 0;
+  60   2          if(SBUF=='G'){
+  61   3            getflag=0;
+  62   3          }else if(SBUF=='I'){
+  63   3            tempflag=0;
+  64   3            for(i=0;i<8;i++)
+  65   3              time[i]=temp[i];
+  66   3          }else if(SBUF=='M'){
+  67   3            MOTOR=!MOTOR;
+  68   3          }else if(SBUF=='U'){
+  69   3            MOTOR_SPEED-=1;
+  70   3          Uart_One_Send(MOTOR_SPEED/10+0x30);
+  71   3          Uart_One_Send(MOTOR_SPEED%10+0x30);
+  72   3          }else if(SBUF=='D'){
+  73   3            MOTOR_SPEED+=1;
+  74   3            
+  75   3          Uart_One_Send(MOTOR_SPEED/10+0x30);
+  76   3          Uart_One_Send(MOTOR_SPEED%10+0x30);
+  77   3          }else{
+  78   3            temp[tempflag]=SBUF;
+  79   3            tempflag++;
+  80   3          }
+  81   2        }
+  82   1      }
+  83          //========================================
+  84          void Uart_Two_Receive() interrupt 8
+  85          {
+  86   1        EA=0;
+  87   1        if(S2CON&S2RI)
+  88   1        {
+  89   2          S2CON&=~S2RI;
+  90   2          GP2Y_DATA[j]=S2BUF;
+  91   2          if(S2BUF==0xff){
+  92   3            j=0;
+  93   3            GP2Y_CAL();
+  94   3            GP2Y_DATA[7]=0xFF;
+  95   3          }else if(S2BUF==0xaa){
+  96   3            j=1;
+  97   3          }else{
+  98   3            j++;
+  99   3          }
+ 100   2        }
+ 101   1        EA=1;
+ 102   1      }
+ 103          //=====================================
+ 104          void GP2Y_CAL()
+ 105          {
+ 106   1        uchar flag=0;
+ 107   1        uint sum;
+ 108   1        sum=GP2Y_DATA[1]+GP2Y_DATA[2]+GP2Y_DATA[3]+GP2Y_DATA[4];
+ 109   1        if(sum==GP2Y_DATA[5]){
+ 110   2          v0=(GP2Y_DATA[1]*256.0+GP2Y_DATA[2])/1024.0*5.0;
+ 111   2          PM=v0*GP2Y_K;
+ 112   2        }else{
+ 113   2          v0=0.0;
+ 114   2          PM=999.0;
+ 115   2        }
+ 116   1      }
+
+C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 18:42:29 PAGE 3   
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    478    ----
-C51 COMPILER V9.52.0.0   UART                                                              05/14/2016 17:58:59 PAGE 3   
-
-   CONSTANT SIZE    =      9    ----
+   CODE SIZE        =    505    ----
+   CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     26       4
+   DATA SIZE        =     47       4
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

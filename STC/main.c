@@ -15,20 +15,6 @@
 #define BUTTON4 P22
 #define buzzer P20
 
-void delayms(unsigned int xms)   //延时函数 ，延时xms
-{
-      unsigned int i , j;
-          for(i = 0; i < xms; i++)
-              for(j = 0; j < 110; j++);
-}
-void fengming()    //蜂鸣函数，脉宽t = 1ms 周期T = 2ms 频率f = 0.5khz 实际发现延时1ms的时候效果最好
-{
-        buzzer = 0; //给P1.5口送低电平
-        delayms(1);   //延时1ms
-        buzzer = 1;   //给P1.5口送高电平
-        delayms(1);   //延时1ms
-}
-
 void Delay500ms()		//@11.0592MHz
 {
 	unsigned char i, j, k;
@@ -107,19 +93,17 @@ void main()
 	Init_online();
 	DisplayOneChar(15,0,'N');
 	DisplayListChar(0,1,"T=00 H=00 A=000");
-	P2M1=0x00;
-	P2M0=0x01;
-	fengming();
 	while(1){
-		DisplayListChar(1,0,time);
+		for(i=0;i<8;i++)
+			DisplayOneChar(i+1,0,time[i]);
 		if(MOTOR)
 			DisplayOneChar(10,0,'R');
 		else
 			DisplayOneChar(10,0,'S');
 		CCAP0H=MOTOR_SPEED*16;
 		CCAP0L=MOTOR_SPEED*16;
-		DisplayOneChar(12,0,MOTOR_SPEED/10);
-		DisplayOneChar(13,0,MOTOR_SPEED%10);
+		DisplayOneChar(12,0,MOTOR_SPEED/10+0x30);
+		DisplayOneChar(13,0,MOTOR_SPEED%10+0x30);
 		RH();
 		DisplayOneChar(2,1,U8T_data_H/10+0x30);
 		DisplayOneChar(3,1,U8T_data_H%10+0x30);
