@@ -37,8 +37,8 @@ socket.on('notice',function(data) {
     $("#mode_tag").removeClass("am-badge-success");
     $("#mode_tag").removeClass("am-badge-primary");
   }
-  $("#motorspeed_tag").html(data[1]);
-  if (parseInt(data[2])>=14) {
+  $("#motorspeed_tag").html(data[2]);
+  if (parseInt(data[2])>=11) {
       $("#motorspeed_tag_badge").removeClass("am-badge-success");
       $("#motorspeed_tag_badge").addClass("am-badge-danger");
   } else {
